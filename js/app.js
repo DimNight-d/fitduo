@@ -236,7 +236,7 @@ const App = (() => {
         return `<div class="card meal ${open ? 'open' : ''}">
           <div class="meal-head" data-act="meal-open" data-i="${i}">
             <div><small class="slot">${sl[i][1]}</small><h3>${esc(r.name)}</h3>
-            <div class="meta">${icon(ICON.clock)} ${r.time} хв ${batchNote}</div></div>
+            <div class="meta">${icon(ICON.clock)} ${r.time} хв ${(r.tool || []).map(t => `<span class="tool">${TOOLS[t]}</span>`).join('')} ${batchNote}</div></div>
             <div class="por">${ps.map((p, pi) => `<span><small>${esc(p.name)}</small>${pors[pi].rep ? `<em class="swap-tag">замінено</em>` : pors[pi].kcal + ' ккал'}</span>`).join('')}</div>
             ${icon(ICON.chev, 'chev')}
           </div>
@@ -250,7 +250,7 @@ const App = (() => {
           </div>` : ''}
         </div>`;
       }).join('')}
-      <p class="hint">Порції розраховані за калоріями кожного. Зважуйте продукти перші 1–2 тижні — потім навчитеся визначати «на око». Крупи вказані в сухому вигляді, м'ясо — в сирому.</p>`;
+      <p class="hint">Порції розраховані за калоріями кожного. Зважуйте продукти перші 1–2 тижні — потім навчитеся визначати «на око». Крупи вказані в сухому вигляді, м'ясо — в сирому. Час для аерогриля орієнтовний: перші рази перевіряйте готовність — у різних моделях він трохи відрізняється.</p>`;
   }
 
   // Порада, чим добрати білок без зайвих калорій
@@ -677,10 +677,12 @@ const App = (() => {
     // офлайн-режим для iPhone (працює лише з http/https, не з файлу)
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
     if (st().profiles.length) Calc.reviewAdjustments();
-    // нові страви в базі: перегенеровуємо меню майбутніх тижнів, поточний тиждень не чіпаємо
+    // змінився набір страв: перегенеровуємо меню майбутніх тижнів; у поточному id ті самі,
+    // тож він одразу показує оновлені рецепти — лише скидаємо позначки покупок
     if (st().startDate && st().recipesVersion !== RECIPES_VERSION) {
       const n = Plan.weekNo();
       Object.keys(st().plans).forEach(k => { if (+k > n) delete st().plans[k]; });
+      delete st().shopping[n];
       st().recipesVersion = RECIPES_VERSION;
       Store.save();
     }

@@ -39,7 +39,8 @@ const Plan = (() => {
 
   function mealWeek(n) {
     const st = Store.state;
-    if (st.plans[n]) return st.plans[n];
+    // збережене меню з неіснуючими стравами (після оновлення бази) — генеруємо заново
+    if (st.plans[n] && st.plans[n].days.flat().every(id => RECIPES.some(r => r.id === id))) return st.plans[n];
     const fam = st.family || {};
     const sl = slots();
     const pools = {};

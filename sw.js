@@ -1,6 +1,6 @@
 // Service worker: програма працює без інтернету.
 // VERSION має збігатися з ?v= у index.html (оновлюйте обидва через tools/bump-version.sh).
-const VERSION = 11;
+const VERSION = 12;
 const CACHE = 'fitduo-v' + VERSION;
 const FILES = ['foods', 'dishes', 'exercises', 'figures', 'storage', 'calc', 'plan', 'charts', 'app', 'foodcalc', 'onboarding', 'player'];
 const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
